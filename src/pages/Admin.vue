@@ -11,6 +11,7 @@
           <app-header @onChange="handleCollapse"></app-header>
       </el-header>
       <el-main>
+          <breadcrumb></breadcrumb>
           <router-view></router-view>
       </el-main>
     </el-container>
@@ -21,11 +22,13 @@
 <script>
 import Aside from "../components/Aside.vue";
 import Header from "../components/Header.vue";
+import Breadcrumb from "../components/Breadcrumb.vue";
 export default {
     name:"admin-index",
     components:{
         "app-aside" :Aside,
         "app-header" :Header,
+        "breadcrumb":Breadcrumb
     },
     data(){
         return{

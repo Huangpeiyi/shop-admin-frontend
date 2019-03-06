@@ -17,7 +17,7 @@
         <el-menu-item-group>
           <!-- <span slot="title">分组一</span> -->
           <el-menu-item :index="`${index+1}-${subindex+1}`" v-for="(subitem,subindex) in item.group" :key="subindex">
-              <router-link :to="subitem.src" class="aaa">{{subitem.title}}</router-link>
+              <router-link :to="subitem.src" class="tabtext">{{subitem.title}}</router-link>
            </el-menu-item>
         </el-menu-item-group>
 
@@ -74,7 +74,7 @@ export default {
     height:100%;
     padding-left:40px;
 }
-.aaa{
+.tabtext{
     color:inherit;
     text-decoration: none;
 }

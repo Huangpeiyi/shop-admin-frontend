@@ -16,7 +16,9 @@ import axios from 'axios';
 import Login from "./pages/Login.vue"
 import Admin from "./pages/Admin.vue"
 import CategoryList from "./pages/category/CategoryList.vue"
+
 import GoodsList from "./pages/goods/GoodsList.vue"
+import GoodsAdd from "./pages/goods/GoodsAdd.vue"
 
 import VueRouter from "vue-router";
 Vue.use(VueRouter);
@@ -26,7 +28,8 @@ const routes = [
   {path:"/login",component:Login,meta:"登录页"},
   {path:"/admin",component:Admin,meta:"首页",redirect: "/admin/goods-list",children:[
     {path:"category-list",component:CategoryList,meta:"栏目列表"},
-    {path:"goods-list",component:GoodsList,meta:"栏目列表"}
+    {path:"goods-list",component:GoodsList,meta:"商品列表"},
+    {path:"goods-add",component:GoodsAdd,meta:"添加商品"}
   ]}
 ]
 //创建路由对象
