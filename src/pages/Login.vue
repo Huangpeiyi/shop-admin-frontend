@@ -1,16 +1,16 @@
 <template>
 <div class="login-container">
     <h3>登录</h3>
-  <el-form :model="ruleForm2" status-icon label-width="60px" class="demo-ruleForm">
-    <el-form-item label="密码">
-      <el-input type="text" v-model="ruleForm2.username" autocomplete="off"></el-input>
+  <el-form :model="formData" status-icon label-width="60px" class="demo-ruleForm">
+    <el-form-item label="账号">
+      <el-input type="text" v-model="formData.uname" autocomplete="off"></el-input>
     </el-form-item>
     <el-form-item label="密码">
-      <el-input type="password" v-model="ruleForm2.password" autocomplete="off"></el-input>
+      <el-input type="password" v-model="formData.upwd" autocomplete="off"></el-input>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="submitForm()">提交</el-button>
-      <el-button @click="resetForm()">重置</el-button>
+      <el-button type="primary" @click="submitForm('formData')">提交</el-button>
+      <el-button @click="resetForm('formData')">重置</el-button>
     </el-form-item>
   </el-form>
 </div>
@@ -20,20 +20,39 @@
 export default {
   data() {
     return {
-      ruleForm2: {
-        username: "",
-        password: ""
+      formData: {
+        uname: "",
+        upwd: ""
       }
     };
   },
   methods: {
-    submitForm() {
-      console.log(this.ruleForm2);
+    submitForm(formName) {
+      //console.log(this.formData);
+      // this.$axios({
+      //   url:"/admin/account/login",
+      //   method:"POST",
+      //   data:this.formData,
+      //   //处理跨域
+      //   withCredentials:true,
+      // }).then(res=>{
+      //   const {status,message}=res.data;
+      //   //如果登录错误
+      //   if(status==1){
+      //     this.$message.error(message);
+      //   }else{
+      //     this.$router.back();
+      //   }
+      // })
+
+      this.$store.dispatch('user/login',this.formData).then(()=>{
+        this.$router.back();
+      });
     },
-    resetForm() {
-      this.ruleForm2 = {
-        username: "",
-        password: ""
+    resetForm(formName) {
+      this.formData = {
+        uname: "",
+        upwd: ""
       };
     }
   }

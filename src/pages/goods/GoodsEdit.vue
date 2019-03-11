@@ -2,18 +2,11 @@
   <el-form ref="form" :model="form" label-width="80px" class="goodsAddBox mt20">
     <el-form-item label="所属类别">
       <el-select v-model="form.category_id" placeholder="请选择">
-        <!-- <el-option-group v-for="(item,index) in categorys" :key="index" :label="item.title">
-          <el-option
-            v-for="(subItem,subIndex) in item.group"
-            :key="subIndex"
-            :label="subItem.title"
-            :value="subItem.category_id"
-          ></el-option>
-        </el-option-group>-->
-        <el-option-group v-for="(item,index) in categorys" 
-        :key="index" 
-        :label="item.title"
-        v-if="item.parent_id===0"
+        <el-option-group
+          v-for="(item,index) in categorys"
+          :key="index"
+          :label="item.title"
+          v-if="item.parent_id===0"
         >
           <el-option
             v-for="(subItem,subIndex) in categorys"
@@ -23,7 +16,6 @@
             v-if="subItem.parent_id===item.category_id"
           ></el-option>
         </el-option-group>
-
       </el-select>
     </el-form-item>
 
@@ -104,8 +96,8 @@
     </el-form-item>
 
     <el-form-item>
-      <el-button type="primary" @click="onSubmit">立即创建</el-button>
-      <el-button>取消</el-button>
+      <el-button type="primary" @click="onSubmit">保存</el-button>
+      <el-button @click="$router.back()">取消</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -125,8 +117,8 @@ export default {
         status: false,
         is_top: false,
         is_hot: false,
-        is_slide:false,
-        title: "",        
+        is_slide: false,
+        title: "",
         sub_title: "",
         goods_no: "",
         stock_quantity: "",
@@ -135,20 +127,49 @@ export default {
         zhaiyao: "",
         content: "",
         //封面图片
-        imgList:[],
+        imgList: [],
         //多张图片
-        fileList:[],
-
+        fileList: []
       },
       dialogImageUrl: "",
       dialogVisible: false,
       //封面
       imageUrl: "",
       //类别数据
-      categorys: []
+      categorys: [],
+      //商品的id
+      id: ""
     };
   },
   mounted() {
+    //请求商品数据
+    //1.获取动态路由id
+    const { id } = this.$route.params;
+    //2.保存到data里面
+    this.id = id;
+    //3.请求商品数据
+      this.$axios({
+        url: `/admin/goods/getgoodsmodel/${id}`
+      }).then(res => {
+        console.log(res);
+        const {message} = res.data;
+        // 初始化表单的值
+        this.form = message;
+
+        // 预览图片
+        this.imageUrl = message.imgList[0].url;
+
+        this.form.fileList = message.fileList.map(v => {
+          return {
+            ...v,
+            // 覆盖 v 对象里面的url
+            url: `http://localhost:8899` + v.shorturl
+          }
+        })
+
+      })
+
+    //请求数据分类
     this.$axios({
       method: "get",
       url: `/admin/category/getlist/goods`
@@ -183,29 +204,29 @@ export default {
     onSubmit() {
       //console.log(this.form);
       this.$axios({
-        method:"POST",
-        url:"/admin/goods/add/goods",
-        data:this.form,
+        method: "POST",
+        url: `/admin/goods/edit/${this.id}`,
+        data: this.form,
         //处理跨域，指示是否跨站点访问控制请求
-        withCredentials: true, // default
-      }).then(res=>{
-        const {message,status} = res.data;
-        if(status == 0 ){
+        withCredentials: true // default
+      }).then(res => {
+        const { message, status } = res.data;
+        if (status == 0) {
           this.$message({
-            message:message,
-            type:"success"
+            message: message,
+            type: "success"
           });
           setTimeout(() => {
-            this.$router.replace("/admin/goods-list")
+            this.$router.replace("/admin/goods-list");
           }, 1000);
         }
-      })
+      });
     },
 
     handleAvatarSuccess(res, file) {
       // 头像预览，把图片解析成base64字符串
       this.imageUrl = window.URL.createObjectURL(file.raw);
-      this.form.imgList=[res];
+      this.form.imgList = [res];
       //解决mac本自动添加upload的问题
       // res.shorturl=res.shorturl.replace("upload","");
       // res.url=res.url.replace("upload","");
@@ -228,7 +249,7 @@ export default {
       this.dialogVisible = true;
     },
     //上传图片相册的成功回调函数
-    handleFileList(res){
+    handleFileList(res) {
       this.form.fileList.push(res);
     }
   },

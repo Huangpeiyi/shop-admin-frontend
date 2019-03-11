@@ -101,6 +101,7 @@ export default {
     },
     handleEdit(index, row) {
       console.log(index, row);
+      this.$router.push(`/admin/goods-edit/${row.id}`)
     },
     //当表格选择时触发
     handleSelectionChange(data) {
